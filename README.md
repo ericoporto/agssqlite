@@ -1,0 +1,2 @@
+# agssqlite
+AGS Sqlite plugin
