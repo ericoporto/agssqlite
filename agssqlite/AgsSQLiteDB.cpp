@@ -1,5 +1,6 @@
 #include "AgsSQLiteDB.h"
 #include <cstdio>
+#include <string.h>
 
 static int redir_callback(void *instanceAgsSQLiteDB, int argc, char **argv, char **azColName)
 {
@@ -24,6 +25,14 @@ AgsSQLiteDB::AgsSQLiteDB(char* path) {
 		OpenStatusText = new char[str_size+1];
 		snprintf(OpenStatusText, str_size, "Opened database successfully\n");
 	}
+
+	if (Path != NULL) {
+		delete Path;
+	}
+
+	int str_size = snprintf(NULL, 0, "%s", path);
+	Path = new char[str_size + 1];
+	snprintf(Path, str_size, "%s", path);
 }
 
 int AgsSQLiteDB::ExecuteQuery(char* query) {
@@ -118,6 +127,7 @@ const char* AgsSQLiteDBInterface::name = "AgsSQLite";
 
 int AgsSQLiteDBInterface::Dispose(const char* address, bool force)
 {
+	((AgsSQLiteDB*)address)->Close();
 	delete ((AgsSQLiteDB*)address);
 	return (1);
 }
@@ -126,22 +136,23 @@ int AgsSQLiteDBInterface::Dispose(const char* address, bool force)
 
 int AgsSQLiteDBInterface::Serialize(const char* address, char* buffer, int bufsize)
 {
-	AgsSQLiteDB* arr = (AgsSQLiteDB*)address;
-	char* ptr = buffer;
-
+	AgsSQLiteDB* agsSQLiteDB = (AgsSQLiteDB*)address;
+	int path_length = strlen((*agsSQLiteDB).Path);
 	
-	return (ptr - buffer);
+	memcpy(buffer, (*agsSQLiteDB).Path, path_length);
+	return sizeof(path_length);
 }
 
 //------------------------------------------------------------------------------
 
 void AgsSQLiteDBReader::Unserialize(int key, const char* serializedData, int dataSize)
 {
-	AgsSQLiteDB* arr = new AgsSQLiteDB((char*)"");
+	char* path = new char[dataSize];
+	memcpy(path, serializedData, dataSize);
 
-	const char* ptr = serializedData;
+	AgsSQLiteDB* agsSQLiteDB = new AgsSQLiteDB((char*)path);
 
-	engine->RegisterUnserializedObject(key, arr, &AgsSQLiteDB_Interface);
+	engine->RegisterUnserializedObject(key, agsSQLiteDB, &AgsSQLiteDB_Interface);
 }
 
 //..............................................................................
