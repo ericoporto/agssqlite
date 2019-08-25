@@ -57,6 +57,10 @@ IAGSEngine* engine;
 
 
 AgsSQLiteDB* AgsSQLite_Open(const char* database_path) {
+	if (database_path == NULL) {
+		return NULL;
+	}
+
 	AgsSQLiteDB* agsSQLiteDB = new AgsSQLiteDB((char*) database_path);
 
 	return agsSQLiteDB;
@@ -71,6 +75,10 @@ const char* AgsSQLite_GetDBPath(AgsSQLiteDB* self) {
 }
 
 int AgsSQLite_ExecuteQuery(AgsSQLiteDB* self, const char* query) {
+	if (query == NULL) {
+		return 0;
+	}
+
 	return self->ExecuteQuery((char*) query);
 }
 
