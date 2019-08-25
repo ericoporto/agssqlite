@@ -1,4 +1,7 @@
 # agssqlite
+
+[![Build Status](https://dev.azure.com/ericoporto/agssqlite/_apis/build/status/ericoporto.agssqlite?branchName=master)](https://dev.azure.com/ericoporto/agssqlite/_build/latest?definitionId=9&branchName=master)
+
 AGS Sqlite plugin
 
 ## Debugging a sqlite database
