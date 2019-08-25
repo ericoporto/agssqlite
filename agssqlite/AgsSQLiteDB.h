@@ -14,11 +14,14 @@ public:
 	char* ExecuteQuery(char* query);
 	int IsOpen();
 	void Close();
-	void ClearResultStatus();
+	void ClearQueryStatus();
+	char* OpenStatusText;
+	int OpenStatus;
+	char* QueryStatusText;
 	int QueryStatus;
 	char* Path;
 	char* QueryResult;
-	int callback(void *NotUsed, int argc, char **argv, char **azColName);
+	int callback(int argc, char **argv, char **azColName);
 };
 
 //------------------------------------------------------------------------------

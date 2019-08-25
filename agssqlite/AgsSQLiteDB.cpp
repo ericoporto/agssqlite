@@ -1,26 +1,65 @@
 #include "AgsSQLiteDB.h"
+#include <cstdio>
+
+static int redir_callback(void *instanceAgsSQLiteDB, int argc, char **argv, char **azColName)
+{
+	AgsSQLiteDB* myAgsSQLiteDB = reinterpret_cast<AgsSQLiteDB*>(instanceAgsSQLiteDB);
+	return myAgsSQLiteDB->callback(argc, argv, azColName);
+}
 
 AgsSQLiteDB::AgsSQLiteDB(char* path) {
-
+	OpenStatus = sqlite3_open(path, &db);
+	
+	if (OpenStatus) {
+		snprintf(OpenStatusText, 300, "Error: Can't open database: %s\n", sqlite3_errmsg(db));
+	}
+	else {
+		snprintf(OpenStatusText, 300, "Opened database successfully\n");
+	}
 }
 
 char* AgsSQLiteDB::ExecuteQuery(char* query) {
+	char* zErrMsg;
 
+	QueryStatus = sqlite3_exec(db, query, redir_callback, this, &zErrMsg);
+	if (QueryStatus != SQLITE_OK) {
+		snprintf(QueryStatusText, 300, "SQL error: %s\n", zErrMsg);
+		sqlite3_free(zErrMsg);
+	}
+	else {
+		snprintf(QueryStatusText, 300, "Query executed successfully\n");
+	}
 }
 
 int AgsSQLiteDB::IsOpen() {
-
+	if (OpenStatus || db != NULL) {
+		return false;
+	}
+	else {
+		return true;
+	}
 }
 
 void AgsSQLiteDB::Close() {
 
+	if (OpenStatus || db != NULL) {
+		sqlite3_close(db);
+		if (db != NULL) {
+			delete  db;
+			db = NULL;
+		}
+	}
+	OpenStatus = true;
+
 }
 
-void AgsSQLiteDB::ClearResultStatus() {
-
+void AgsSQLiteDB::ClearQueryStatus() {
+	QueryStatus = -1;
+	delete QueryStatusText;
+	QueryStatusText = (char*) "";
 }
 
-int AgsSQLiteDB::callback(void *NotUsed, int argc, char **argv, char **azColName) {
+int AgsSQLiteDB::callback(int argc, char **argv, char **azColName) {
 
 }
 
