@@ -73,7 +73,11 @@ bool AgsSQLite_IsOpen(AgsSQLiteDB* self) {
 }
 
 const char* AgsSQLite_GetDBPath(AgsSQLiteDB* self) {
-	return engine->CreateScriptString(self->Path);
+	if (self->Path != NULL) {
+		return engine->CreateScriptString(self->Path);
+	}
+	
+	return engine->CreateScriptString("");
 }
 
 int AgsSQLite_ExecuteQuery(AgsSQLiteDB* self, const char* query) {
@@ -89,11 +93,17 @@ int AgsSQLite_GetQueryStatus(AgsSQLiteDB* self) {
 }
 
 const char* AgsSQLite_GetQueryStatusText(AgsSQLiteDB* self) {
-	return engine->CreateScriptString(self->QueryStatusText);
+	if (self->QueryStatusText != NULL) {
+		return engine->CreateScriptString(self->QueryStatusText);
+	}
+	return engine->CreateScriptString("");
 }
 
 const char* AgsSQLite_GetQueryResult(AgsSQLiteDB* self) {
-	return engine->CreateScriptString(self->QueryResult);
+	if (self->QueryResult != NULL) {
+		return engine->CreateScriptString(self->QueryResult);
+	}
+	return engine->CreateScriptString("");
 }
 
 void AgsSQLite_ClearResultStatus(AgsSQLiteDB* self) {
