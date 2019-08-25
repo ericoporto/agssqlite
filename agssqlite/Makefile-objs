@@ -1,0 +1,1 @@
+OBJS = agssqliteplugin.o  AgsSQLiteDB.o  sqlite3.o
