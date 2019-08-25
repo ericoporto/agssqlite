@@ -1,6 +1,12 @@
 # agssqlite
 AGS Sqlite plugin
 
+## Debugging a sqlite database
+
+There a many different softwares available to visualize a sqlite database. 
+
+Right now, [Sqlite Browser](https://github.com/sqlitebrowser/sqlitebrowser) is a nice one, and you can look the database while the game is running on AGS.
+
 ## AgsSQLite Script API
 
 **`AgsSQLite* AgsSQLite.Open(String db_path)`**
