@@ -11,7 +11,7 @@ public:
 	sqlite3 *db;
 	AgsSQLiteDB(char* path);
 	~AgsSQLiteDB(void);
-	char* ExecuteQuery(char* query);
+	int ExecuteQuery(char* query);
 	int IsOpen();
 	void Close();
 	void ClearQueryStatus();

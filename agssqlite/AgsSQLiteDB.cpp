@@ -18,8 +18,14 @@ AgsSQLiteDB::AgsSQLiteDB(char* path) {
 	}
 }
 
-char* AgsSQLiteDB::ExecuteQuery(char* query) {
+int AgsSQLiteDB::ExecuteQuery(char* query) {
 	char* zErrMsg;
+
+	if (QueryResult != NULL) {
+		delete QueryResult;
+	}
+
+	QueryResult = (char*) "";
 
 	QueryStatus = sqlite3_exec(db, query, redir_callback, this, &zErrMsg);
 	if (QueryStatus != SQLITE_OK) {
@@ -29,6 +35,8 @@ char* AgsSQLiteDB::ExecuteQuery(char* query) {
 	else {
 		snprintf(QueryStatusText, 300, "Query executed successfully\n");
 	}
+
+	return QueryStatus;
 }
 
 int AgsSQLiteDB::IsOpen() {
@@ -44,10 +52,6 @@ void AgsSQLiteDB::Close() {
 
 	if (OpenStatus || db != NULL) {
 		sqlite3_close(db);
-		if (db != NULL) {
-			delete  db;
-			db = NULL;
-		}
 	}
 	OpenStatus = true;
 
@@ -60,7 +64,16 @@ void AgsSQLiteDB::ClearQueryStatus() {
 }
 
 int AgsSQLiteDB::callback(int argc, char **argv, char **azColName) {
-
+	if (QueryResult != NULL) {
+		delete QueryResult;
+	}
+	
+	int i;
+	for (i = 0; i < argc; i++) {
+		snprintf(QueryResult, 1000, "%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+	}
+	snprintf(QueryResult, 1000, "\n");
+	return 0;
 }
 
 AgsSQLiteDB::~AgsSQLiteDB(void)

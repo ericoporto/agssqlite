@@ -53,37 +53,45 @@ namespace agssqlite {
 //define engine
 IAGSEngine* engine;
 
+#include "AgsSQLiteDB.h"
 
-const char* AgsSQLite_Open(const char* database_path) {
 
+AgsSQLiteDB* AgsSQLite_Open(const char* database_path) {
+	AgsSQLiteDB* agsSQLiteDB = new AgsSQLiteDB((char*) database_path);
+
+	return agsSQLiteDB;
 }
 
-bool AgsSQLite_IsOpen() {
-
+bool AgsSQLite_IsOpen(AgsSQLiteDB* self) {
+	return self->IsOpen();
 }
 
-const char* AgsSQLite_GetDBPath() {
-
+const char* AgsSQLite_GetDBPath(AgsSQLiteDB* self) {
+	return engine->CreateScriptString(self->Path);
 }
 
-const char* AgsSQLite_ExecuteQuery(const char* query) {
-
+int AgsSQLite_ExecuteQuery(AgsSQLiteDB* self, const char* query) {
+	return self->ExecuteQuery((char*) query);
 }
 
-int AgsSQLite_GetQueryStatus() {
-
+int AgsSQLite_GetQueryStatus(AgsSQLiteDB* self) {
+	return self->QueryStatus;
 }
 
-const char* AgsSQLite_GetQueryResult() {
-
+const char* AgsSQLite_GetQueryStatusText(AgsSQLiteDB* self) {
+	return engine->CreateScriptString(self->QueryStatusText);
 }
 
-void AgsSQLite_ClearResultStatus() {
-
+const char* AgsSQLite_GetQueryResult(AgsSQLiteDB* self) {
+	return engine->CreateScriptString(self->QueryResult);
 }
 
-void AgsSQLite_Close() {
+void AgsSQLite_ClearResultStatus(AgsSQLiteDB* self) {
+	self->ClearQueryStatus();
+}
 
+void AgsSQLite_Close(AgsSQLiteDB* self) {
+	self->Close();
 }
 
 
@@ -105,7 +113,7 @@ const char* ourScriptHeader =
 " \r\n"
 "struct AgsSQLite { \r\n"
 "  /// Opens a SQLite DB and returns error message \r\n"
-"  static String Open(String db); \r\n"
+"  static AgsSQLite* Open(String db); // $AUTOCOMPLETESTATICONLY$\r\n"
 "   \r\n"
 "  /// Returns the path from the open DB \r\n"
 "  String GetDBPath(); \r\n"
@@ -227,6 +235,7 @@ void AGS_EngineStartup(IAGSEngine* lpEngine)
 	engine->RegisterScriptFunction("AgsSQLite::GetDBPath^0", (void*)AgsSQLite_GetDBPath);
 	engine->RegisterScriptFunction("AgsSQLite::ExecuteQuery^1", (void*)AgsSQLite_ExecuteQuery);
 	engine->RegisterScriptFunction("AgsSQLite::GetQueryStatus^0", (void*)AgsSQLite_GetQueryStatus);
+	engine->RegisterScriptFunction("AgsSQLite::GetQueryStatusText^0", (void*)AgsSQLite_GetQueryStatusText);
 	engine->RegisterScriptFunction("AgsSQLite::GetQueryResult^0", (void*)AgsSQLite_GetQueryResult);
 	engine->RegisterScriptFunction("AgsSQLite::ClearResultStatus^0", (void*)AgsSQLite_ClearResultStatus);
 	engine->RegisterScriptFunction("AgsSQLite::Close^0", (void*)AgsSQLite_Close);
