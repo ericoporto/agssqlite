@@ -25,7 +25,7 @@ int AgsSQLiteDB::ExecuteQuery(char* query) {
 		delete QueryResult;
 	}
 
-	QueryResult = (char*) "";
+	QueryResult = NULL;
 
 	QueryStatus = sqlite3_exec(db, query, redir_callback, this, &zErrMsg);
 	if (QueryStatus != SQLITE_OK) {
