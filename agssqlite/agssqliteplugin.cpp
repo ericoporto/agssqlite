@@ -63,6 +63,8 @@ AgsSQLiteDB* AgsSQLite_Open(const char* database_path) {
 
 	AgsSQLiteDB* agsSQLiteDB = new AgsSQLiteDB((char*) database_path);
 
+	engine->RegisterManagedObject(agsSQLiteDB, &AgsSQLiteDB_Interface);
+
 	return agsSQLiteDB;
 }
 
@@ -281,6 +283,8 @@ void AGS_EngineStartup(IAGSEngine* lpEngine)
 	engine->RegisterScriptFunction("AgsSQLite::GetQueryResult^0", (void*)AgsSQLite_GetQueryResult);
 	engine->RegisterScriptFunction("AgsSQLite::ClearResultStatus^0", (void*)AgsSQLite_ClearResultStatus);
 	engine->RegisterScriptFunction("AgsSQLite::Close^0", (void*)AgsSQLite_Close);
+
+	engine->AddManagedObjectReader(AgsSQLiteDBInterface::name, &AgsSQLiteDB_Reader);
 }
 
 //------------------------------------------------------------------------------
