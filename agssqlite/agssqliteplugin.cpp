@@ -100,8 +100,8 @@ const char* AgsSQLite_GetQueryStatusText(AgsSQLiteDB* self) {
 }
 
 const char* AgsSQLite_GetQueryResult(AgsSQLiteDB* self) {
-	if (self->QueryResult != NULL) {
-		return engine->CreateScriptString(self->QueryResult);
+	if (!(self->QueryResult.empty())) {
+		return engine->CreateScriptString(self->QueryResult.c_str());
 	}
 	return engine->CreateScriptString("");
 }

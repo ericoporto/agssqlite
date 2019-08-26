@@ -38,15 +38,11 @@ AgsSQLiteDB::AgsSQLiteDB(char* path) {
 int AgsSQLiteDB::ExecuteQuery(char* query) {
 	char* zErrMsg;
 
-	if (QueryResult != NULL) {
-		delete QueryResult;
-	}
-
 	if (QueryStatusText != NULL) {
 		delete QueryStatusText;
 	}
 
-	QueryResult = NULL;
+	QueryResult.clear();
 
 	QueryStatus = sqlite3_exec(db, query, redir_callback, this, &zErrMsg);
 	if (QueryStatus != SQLITE_OK) {
@@ -88,11 +84,7 @@ void AgsSQLiteDB::ClearQueryStatus() {
 	QueryStatusText = (char*) "";
 }
 
-int AgsSQLiteDB::callback(int argc, char **argv, char **azColName) {
-	if (QueryResult != NULL) {
-		delete QueryResult;
-	}
-	
+int AgsSQLiteDB::callback(int argc, char **argv, char **azColName) {	
 	int i;
 	int str_size = 0;
 	for (i = 0; i < argc; i++) {
@@ -100,12 +92,18 @@ int AgsSQLiteDB::callback(int argc, char **argv, char **azColName) {
 	}
 	str_size += snprintf(NULL, 0, "\n");
 
-	QueryResult = new char[str_size + 1];
+	char* TempStr = new char[str_size + 1];
+
+	char* cur = TempStr;
+	const char* end = cur + str_size;
 
 	for (i = 0; i < argc; i++) {
-		snprintf(QueryResult, str_size, "%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+		cur += snprintf(cur, end-cur, "%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
 	}
-	snprintf(QueryResult, str_size, "\n");
+	cur += snprintf(cur, end-cur, "\n");
+
+	QueryResult.append(TempStr);
+
 	return 0;
 }
 

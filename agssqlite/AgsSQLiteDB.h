@@ -5,6 +5,7 @@
 
 #include "plugin/agsplugin.h"
 #include "sqlite3.h"
+#include <string>
 
 class AgsSQLiteDB {
 public:
@@ -20,7 +21,7 @@ public:
 	char* QueryStatusText;
 	int QueryStatus;
 	char* Path;
-	char* QueryResult;
+	std::string QueryResult;
 	int callback(int argc, char **argv, char **azColName);
 };
 
