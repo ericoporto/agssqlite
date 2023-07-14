@@ -57,11 +57,12 @@ IAGSEngine* engine;
 
 
 AgsSQLiteDB* AgsSQLite_Open(const char* database_path) {
-	if (database_path == NULL) {
-		return NULL;
-	}
+	if (database_path == nullptr) return nullptr;
 
-	AgsSQLiteDB* agsSQLiteDB = new AgsSQLiteDB((char*) database_path);
+    const char* resolved_path = engine->ResolveFilePath(database_path);
+    if (resolved_path == nullptr) return nullptr;
+
+	AgsSQLiteDB* agsSQLiteDB = new AgsSQLiteDB((char*) resolved_path);
 
 	engine->RegisterManagedObject(agsSQLiteDB, &AgsSQLiteDB_Interface);
 
