@@ -17,13 +17,14 @@ AgsSQLiteDB::AgsSQLiteDB(char* path) {
         int str_size = snprintf(nullptr, 0, "Error: Can't open database: %s\n", sqlite3_errmsg(db));
         OpenStatusText.resize(str_size + 1);
         snprintf(&OpenStatusText[0], str_size + 1, "Error: Can't open database: %s\n", sqlite3_errmsg(db));
+        Path = "";
     }
     else
     {
         OpenStatusText = "Opened database successfully\n";
+        Path = path;
     }
 
-	Path = path;
 }
 
 int AgsSQLiteDB::ExecuteQuery(char* query) {

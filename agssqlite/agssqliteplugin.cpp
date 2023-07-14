@@ -64,6 +64,8 @@ AgsSQLiteDB* AgsSQLite_Open(const char* database_path) {
 
 	AgsSQLiteDB* agsSQLiteDB = new AgsSQLiteDB((char*) resolved_path);
 
+    if(agsSQLiteDB->Path != resolved_path) agsSQLiteDB->Path = "";
+
 	engine->RegisterManagedObject(agsSQLiteDB, &AgsSQLiteDB_Interface);
 
 	return agsSQLiteDB;
