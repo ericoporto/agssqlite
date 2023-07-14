@@ -16,11 +16,11 @@ public:
 	int IsOpen();
 	void Close();
 	void ClearQueryStatus();
-	char* OpenStatusText;
+    std::string OpenStatusText;
 	int OpenStatus;
-	char* QueryStatusText;
+    std::string QueryStatusText;
 	int QueryStatus;
-	char* Path;
+    std::string Path;
 	std::string QueryResult;
 	int callback(int argc, char **argv, char **azColName);
 };
@@ -31,14 +31,12 @@ public:
 class AgsSQLiteDBInterface : public IAGSScriptManagedObject
 {
 public:
-	static const char* name;
-
+    static const char* name;
 	AgsSQLiteDBInterface() {};
 
-	virtual int Dispose(const char* address, bool force);
-	virtual const char* GetType() { return (name); }
-	virtual int Serialize(const char* address, char* buffer, int bufsize);
-
+    int Dispose(void *address, bool force) final;
+    const char* GetType() final { return name; }
+	int Serialize(void *address, char *buffer, int bufsize) final;
 };
 
 //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 

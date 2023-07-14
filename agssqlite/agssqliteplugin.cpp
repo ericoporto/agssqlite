@@ -74,15 +74,15 @@ bool AgsSQLite_IsOpen(AgsSQLiteDB* self) {
 }
 
 const char* AgsSQLite_GetDBPath(AgsSQLiteDB* self) {
-	if (self->Path != NULL) {
-		return engine->CreateScriptString(self->Path);
+	if (!self->Path.empty()) {
+		return engine->CreateScriptString(self->Path.c_str());
 	}
 	
 	return engine->CreateScriptString("");
 }
 
 int AgsSQLite_ExecuteQuery(AgsSQLiteDB* self, const char* query) {
-	if (query == NULL) {
+	if (query == nullptr) {
 		return 0;
 	}
 
@@ -94,8 +94,8 @@ int AgsSQLite_GetQueryStatus(AgsSQLiteDB* self) {
 }
 
 const char* AgsSQLite_GetQueryStatusText(AgsSQLiteDB* self) {
-	if (self->QueryStatusText != NULL) {
-		return engine->CreateScriptString(self->QueryStatusText);
+	if (!self->QueryStatusText.empty()) {
+		return engine->CreateScriptString(self->QueryStatusText.c_str());
 	}
 	return engine->CreateScriptString("");
 }
@@ -195,7 +195,7 @@ const char* ourScriptHeader =
 
 LPCSTR AGS_GetPluginName()
 {
-	return ("agssqlite");
+	return "agssqlite";
 }
 
 //------------------------------------------------------------------------------
@@ -212,7 +212,7 @@ int AGS_EditorStartup(IAGSEditor* lpEditor)
 	editor->RegisterScriptHeader(ourScriptHeader);
 
 	// Return 0 to indicate success
-	return (0);
+	return 0;
 }
 
 //------------------------------------------------------------------------------
@@ -264,15 +264,6 @@ void AGS_EditorLoadGame(char* buffer, int bufsize)            //*** optional ***
 // Engine interface
 
 //------------------------------------------------------------------------------
-
-
-
-#define REGISTER(x) engine->RegisterScriptFunction(#x, (void *) (x));
-#define REG_CLASS(c,x,a) engine->RegisterScriptFunction(#c "::" #x "^" #a, (void *) (c ## _ ## x));
-#define REG_ATTR(c,x) engine->RegisterScriptFunction(#c "::get_" #x, (void *) (c ## _Get ## x)); \
-                      engine->RegisterScriptFunction(#c "::set_" #x, (void *) (c ## _Set ## x));
-#define REG_ARR(c,x) engine->RegisterScriptFunction(#c "::geti_" #x, (void *) (c ## _Get ## x)); \
-                     engine->RegisterScriptFunction(#c "::seti_" #x, (void *) (c ## _Set ## x));
 
 #define STRINGIFY(s) STRINGIFY_X(s)
 #define STRINGIFY_X(s) #s
